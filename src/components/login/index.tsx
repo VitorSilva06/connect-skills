@@ -3,16 +3,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { styles } from "./styles";
  
@@ -20,8 +20,8 @@ export function Login() {
   const router = useRouter();
  
   // 👇 Pré-preenchidos (mantidos do seu exemplo)
-  const [email, setEmail] = useState("aluno@teste.com");
-  const [password, setPassword] = useState("123@senac");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
  
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -143,7 +143,7 @@ export function Login() {
             </View>
  
             {/* Ações secundárias (opcional) */}
-            <TouchableOpacity onPress={() => router.push("./(auth)/register")}>
+            <TouchableOpacity onPress={() => router.push("../register")}>
               <Text style={styles.signUpText}>
                 Não possui uma conta? <Text style={styles.signUpLink}>Cadastre-se</Text>
               </Text>
