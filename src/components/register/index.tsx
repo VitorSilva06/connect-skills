@@ -3,47 +3,57 @@ import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
-    Alert,
     ScrollView,
     Text,
     TextInput,
     TouchableOpacity,
-    View,
+    View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { supabase } from '../../lib/supabase';
 import { styles } from "./styles";
 
 export function Register() {
     const router = useRouter();
-
-    const [nome, setNome] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-    const canSubmit =
-        nome.trim() !== "" &&
-        email.trim() !== "" &&
-        password.trim() !== "" &&
-        confirmPassword.trim() !== "" &&
-        !loading;
-
-    const handleRegister = async () => {
-        setLoading(true);
-        await new Promise((r) => setTimeout(r, 600));
-
-        if (password === confirmPassword) {
-            Alert.alert("Sucesso", "Cadastrado com sucesso!");
-            router.push("../login");
-        } else {
-            Alert.alert("Erro", "As senhas não coincidem!");
-        }
-
-        setLoading(false);
-    };
+ 
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
+ 
+  const [showSenha, setShowSenha] = useState(false);
+  const [showConfirmar, setShowConfirmar] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [erroGlobal, setErroGlobal] = useState("");
+ 
+  const canSubmit =
+    nome.trim() &&
+    email.trim() &&
+    senha.length >= 6 &&
+    confirmarSenha === senha &&
+    !loading;
+ 
+  const handleSignUp = async () => {
+    try {
+      setLoading(true);
+      setErroGlobal("");
+      const {data, error} = await supabase.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password: senha,
+        options: {
+            data: {name: nome.trim()}
+        },
+      });
+      if (error) {
+        setErroGlobal(error.message || "Falha ao cadastrar. Tente novamente!");
+      }
+      router.replace("./(auth)/index");
+    } catch {
+      setErroGlobal("Falha ao tentar cadastrar. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
     return (
         <SafeAreaView style={styles.container}>
