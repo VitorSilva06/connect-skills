@@ -14,42 +14,44 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { supabase } from "../../lib/supabase";
 import { styles } from "./styles";
- 
+
 export function Login() {
   const router = useRouter();
- 
+
   // 👇 Pré-preenchidos (mantidos do seu exemplo)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
- 
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
- 
+
   // Mesmo critério que você já usava
   const canSubmit = email.trim() !== "" && password.trim() !== "" && !loading;
- 
+
   const handleSignIn = async () => {
     try {
       setLoading(true);
       setLoginError("");
- 
-   
-      await new Promise((r) => setTimeout(r, 600));
- 
-      if (email.toLowerCase() === "aluno@teste.com" && password === "123@senac") {
-        console.log("Login simulado com sucesso!");
-        // Quando quiser, pode redirecionar:
-        // router.replace("/(tabs)");
-      } else {
-        setLoginError("E-mail ou senha inválidos!");
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setLoginError(error.message || "E-mail ou senha inválidos!");
       }
+      // Login com sucesso
+      router.replace("/(tabs)"); {/* aqui estava: router.replace(./(tabs)");*/ }
+    } catch (e: any) {
+      setLoginError(e.message || "Não foi possível logar. Tente novamente.");
     } finally {
       setLoading(false);
     }
   };
- 
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -64,7 +66,7 @@ export function Login() {
               Aprenda e ensine — conecte-se com quem compartilha habilidades.
             </Text>
           </View>
- 
+
           {/* Formulário */}
           <View style={styles.form}>
             {/* Email */}
@@ -80,13 +82,13 @@ export function Login() {
                 onChangeText={setEmail}
               />
             </View>
- 
+
             {/* Senha */}
             <View style={styles.inputGroup}>
               <View style={styles.labelContainer}>
                 <Text style={styles.label}>Senha</Text>
               </View>
- 
+
               <View style={styles.passwordInputContainer}>
                 <TextInput
                   style={styles.input}
@@ -110,14 +112,14 @@ export function Login() {
                   />
                 </TouchableOpacity>
               </View>
- 
+
               <TouchableOpacity
                 onPress={() => Alert.alert("Recuperar senha", "Fluxo de reset a implementar.")}
               >
                 <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
               </TouchableOpacity>
             </View>
- 
+
             {/* Botão de login */}
             <TouchableOpacity
               onPress={handleSignIn}
@@ -131,17 +133,17 @@ export function Login() {
                 <Text style={styles.signInButtonText}>Entrar</Text>
               )}
             </TouchableOpacity>
- 
+
             {/* Erro de login */}
             {!!loginError && <Text style={styles.loginError}>{loginError}</Text>}
- 
+
             {/* Divider */}
             <View style={styles.dividerContainer}>
               <View style={styles.dividerLine} />
               <Text style={styles.dividerText}>ou</Text>
               <View style={styles.dividerLine} />
             </View>
- 
+
             {/* Ações secundárias (opcional) */}
             <TouchableOpacity onPress={() => router.push("../register")}>
               <Text style={styles.signUpText}>

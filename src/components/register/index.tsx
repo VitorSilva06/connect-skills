@@ -15,45 +15,45 @@ import { styles } from "./styles";
 
 export function Register() {
     const router = useRouter();
- 
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
- 
-  const [showSenha, setShowSenha] = useState(false);
-  const [showConfirmar, setShowConfirmar] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [erroGlobal, setErroGlobal] = useState("");
- 
-  const canSubmit =
-    nome.trim() &&
-    email.trim() &&
-    senha.length >= 6 &&
-    confirmarSenha === senha &&
-    !loading;
- 
-  const handleSignUp = async () => {
-    try {
-      setLoading(true);
-      setErroGlobal("");
-      const {data, error} = await supabase.auth.signUp({
-        email: email.trim().toLowerCase(),
-        password: senha,
-        options: {
-            data: {name: nome.trim()}
-        },
-      });
-      if (error) {
-        setErroGlobal(error.message || "Falha ao cadastrar. Tente novamente!");
-      }
-      router.replace("./(auth)/index");
-    } catch {
-      setErroGlobal("Falha ao tentar cadastrar. Tente novamente.");
-    } finally {
-      setLoading(false);
-    }
-  };
+
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    const [confirmarSenha, setConfirmarSenha] = useState("");
+
+    const [showSenha, setShowSenha] = useState(false);
+    const [showConfirmar, setShowConfirmar] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [erroGlobal, setErroGlobal] = useState("");
+
+    const canSubmit =
+        nome.trim() &&
+        email.trim() &&
+        senha.length >= 6 &&
+        confirmarSenha === senha &&
+        !loading;
+
+    const handleSignUp = async () => {
+        try {
+            setLoading(true);
+            setErroGlobal("");
+            const { data, error } = await supabase.auth.signUp({
+                email: email.trim().toLowerCase(),
+                password: senha,
+                options: {
+                    data: { name: nome.trim() }
+                },
+            });
+            if (error) {
+                setErroGlobal(error.message || "Falha ao cadastrar. Tente novamente!");
+            }
+            router.replace("./(auth)/index");
+        } catch {
+            setErroGlobal("Falha ao tentar cadastrar. Tente novamente.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -80,16 +80,16 @@ export function Register() {
                         <TextInput
                             style={styles.input}
                             placeholder="Senha"
-                            value={password}
-                            secureTextEntry={!showPassword}
-                            onChangeText={setPassword}
+                            value={senha}
+                            secureTextEntry={!setShowSenha}
+                            onChangeText={setSenha}
                         />
                         {/* criando um campo de click para colocar a opção de ocultar senha */}
                         <TouchableOpacity
                             style={styles.showPasswordIcon}
-                            onPress={() => setShowPassword(!showPassword)}
+                            onPress={() => setShowSenha(!showConfirmar)}
                         >
-                            <Text>{showPassword ?
+                            <Text>{showConfirmar ?
 
                                 <Feather name="eye-off" size={20} color="#000000ff" />
                                 :
@@ -97,7 +97,9 @@ export function Register() {
                                 <Feather name="eye" size={20} color="#000000ff" />
 
 
-                            }</Text>
+
+                            }
+                            </Text>
                         </TouchableOpacity>
                     </View>
 
@@ -105,15 +107,15 @@ export function Register() {
                         <TextInput
                             style={styles.input}
                             placeholder="Confirmar senha"
-                            value={confirmPassword}
-                            secureTextEntry={!showConfirmPassword}
-                            onChangeText={setConfirmPassword}
+                            value={confirmarSenha}
+                            secureTextEntry={!showConfirmar}
+                            onChangeText={setConfirmarSenha}
                         />
                         <TouchableOpacity
                             style={styles.showPasswordIcon}
-                            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                            onPress={() => setShowConfirmar(!showConfirmar)}
                         >
-                            <Text>{showPassword ?
+                            <Text>{showConfirmar ?
 
                                 <Feather name="eye-off" size={20} color="#000000ff" />
                                 :
@@ -127,7 +129,7 @@ export function Register() {
 
                     <TouchableOpacity
                         style={[styles.button, !canSubmit && styles.buttonDisabled]}
-                        onPress={handleRegister}
+                        onPress={handleSignUp}
                         disabled={!canSubmit}
                     >
                         {loading ? (
@@ -141,3 +143,4 @@ export function Register() {
         </SafeAreaView>
     );
 }
+''
